@@ -9,7 +9,7 @@ function vscode.generateWorkspace(wks)
     p.eol("\r\n")    
     p.indent("\t")
     p.generate(wks, ".code-workspace", vscode.workspace.generate)
-    p.generate(wks, wks.location .. "/Tasks/.vscode/tasks.json", vscode.workspace.tasks.generate)
+    p.generate(wks, wks.location .. "/.vscode/tasks.json", vscode.workspace.tasks.generate)
 end
 
 function vscode.generateProject(prj)

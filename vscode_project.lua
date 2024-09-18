@@ -170,6 +170,7 @@ launch.configProps = function(prj, cfg)
         launch.cwd,
         launch.environment,
         launch.console,
+        launch.preLaunchTask
     }
 end
 
@@ -188,7 +189,7 @@ end
 function launch.program(prj, cfg)
     local targetdir = project.getrelative(prj, cfg.buildtarget.directory)
     local targetname = cfg.buildtarget.name
-    p.w('"program": "%s",', path.join(targetdir, targetname))
+    p.w('"program": "${workspaceFolder}/%s",', path.join(targetdir, targetname))
 end
 
 function launch.args(prj, cfg)
@@ -208,7 +209,12 @@ function launch.environment(prj, cfg)
 end
 
 function launch.console(prj, cfg)
-    p.w('"console": "integratedTerminal"')
+    p.w('"console": "integratedTerminal",')
+end
+
+function launch.preLaunchTask(prj, cfg)
+    local configName = vscode.configName(cfg, #prj.workspace.platforms > 1)
+    p.w('"preLaunchTask": "build%s",', cfg.name)
 end
 
 function launch.generate(prj)
