@@ -27,12 +27,6 @@ function m.generate(wks)
         end,
     })
 
-    -- HACK(Peter): Hack around the tasks not being picked up when workspace is opened
-    local prjpath = path.getrelative(wks.location, "")
-    p.push('{')
-    p.w('"path": "%s"', prjpath)
-    p.pop('}')
-
     p.pop(']')
     p.pop('}')
 end
