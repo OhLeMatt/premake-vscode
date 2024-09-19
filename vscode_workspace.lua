@@ -1,22 +1,16 @@
 local p = premake
 local project = p.project
-local workspace = p.workspace
 local tree = p.tree
 local vscode = p.modules.vscode
 
+-- WORKSPACE FILE
 vscode.workspace = {}
-vscode.workspace.tasks = {}
 
-local m = vscode.workspace
-
-function m.generate(wks)
-	p.utf8()
-
-    p.push('{')
+function vscode.workspace.generateFolders(wks)
     p.push('"folders": [')
 
     -- Project List
-    tree.traverse(workspace.grouptree(wks), {
+    tree.traverse(p.workspace.grouptree(wks), {
         onleaf = function(n)
             local prj = n.project
 
@@ -27,10 +21,11 @@ function m.generate(wks)
         end,
     })
 
-    p.pop(']')
-    p.pop('}')
+    p.pop('],')
 end
 
+-- TASKS
+vscode.workspace.tasks = {}
 local tasks = vscode.workspace.tasks
 
 function tasks.buildSolutionTask(wks)
@@ -48,7 +43,7 @@ function tasks.buildSolutionTask(wks)
     local msBuildPath, err = os.outputof(vswhere)
     msBuildPath = path.normalize(path.join(msBuildPath, "Current", "Bin", "MSBuild.exe"))
 
-    for cfg in workspace.eachconfig(wks) do
+    for cfg in p.workspace.eachconfig(wks) do
         p.push('{')
         p.w('"type": "shell",')
         p.w('"label": "Build All (%s)",', cfg.name)
@@ -61,7 +56,7 @@ function tasks.buildSolutionTask(wks)
 end
 
 function tasks.buildMakefileTask(wks)
-    for cfg in workspace.eachconfig(wks) do
+    for cfg in p.workspace.eachconfig(wks) do
         p.push('{')
         p.w('"type": "shell",')
         p.w('"label": "build%s",', cfg.name)
@@ -87,12 +82,22 @@ tasks.buildTasks = function(wks)
 end
 
 function tasks.generate(wks)
-    p.push('{')
+    p.push('"tasks": {')
     p.w('"version": "2.0.0",')
     p.push('"tasks": [')
 
     p.callArray(tasks.buildTasks, wks)
 
     p.pop(']')
+    p.pop('}')
+end
+
+-- WORKSPACE AND TASK GENERATION
+function vscode.workspace.generate(wks)
+    p.push('{')
+
+    vscode.workspace.generateFolders(wks)
+    tasks.generate(wks)
+
     p.pop('}')
 end
