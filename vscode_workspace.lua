@@ -41,6 +41,12 @@ function vscode.workspace.generate(wks)
     -- Check if there is a startup project specified
     if not (wks.startproject == nil or wks.startproject == "") then
         vscode.launch.generate(wks.projects[wks.startproject]) -- launch/startup project
+    -- HACK (minifalafel) If no startproject was specified, just generate for the first project in the workspace
+    else
+        prj = wks.projects[1]
+        if not (prj == nil) then
+            vscode.launch.generate(prj)
+        end
     end
 
     p.pop('}')
