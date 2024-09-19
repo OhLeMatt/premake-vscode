@@ -12,22 +12,22 @@ vscode.workspace = {}
 function vscode.workspace.generateFolders(wks)
     p.push('"folders": [')
 
-    -- Project List
-    tree.traverse(p.workspace.grouptree(wks), {
-        onleaf = function(n)
-            local prj = n.project
-
-            local prjpath = path.getrelative(prj.workspace.location, prj.location)
-            p.push('{')
-            p.w('"path": "%s"', prjpath)
-            p.pop('},')
-        end,
-    })
-
     -- Workspace vscode folder
-    --p.push('{')
-    --p.w('"path": ".vscode"')
-    --p.pop('}')
+    p.push('{')
+    p.w('"path": "."')
+    p.pop('},')
+
+    -- Project List
+    --tree.traverse(p.workspace.grouptree(wks), {
+    --    onleaf = function(n)
+    --        local prj = n.project
+--
+    --        local prjpath = path.getrelative(prj.workspace.location, prj.location)
+    --        p.push('{')
+    --        p.w('"path": "%s"', prjpath)
+    --        p.pop('},')
+    --    end,
+    --})
 
     p.pop('],')
 end
