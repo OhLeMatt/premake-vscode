@@ -38,7 +38,10 @@ function vscode.workspace.generate(wks)
 
     vscode.workspace.generateFolders(wks)
     vscode.tasks.generate(wks)
-    vscode.launch.generate(wks.projects[wks.startproject]) -- launch/startup project
+    -- Check if there is a startup project specified
+    if not (wks.startproject == nil or wks.startproject == "") then
+        vscode.launch.generate(wks.projects[wks.startproject]) -- launch/startup project
+    end
 
     p.pop('}')
 end
