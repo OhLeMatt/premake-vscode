@@ -1,7 +1,10 @@
 local p = premake
-local project = p.project
 local tree = p.tree
 local vscode = p.modules.vscode
+
+-- INCLUDES
+include("vscode_tasks.lua")
+include("vscode_launch.lua")
 
 -- WORKSPACE FILE
 vscode.workspace = {}
@@ -21,6 +24,11 @@ function vscode.workspace.generateFolders(wks)
         end,
     })
 
+    -- Workspace vscode folder
+    --p.push('{')
+    --p.w('"path": ".vscode"')
+    --p.pop('}')
+
     p.pop('],')
 end
 
@@ -29,6 +37,8 @@ function vscode.workspace.generate(wks)
     p.push('{')
 
     vscode.workspace.generateFolders(wks)
+    vscode.tasks.generate(wks)
+    vscode.launch.generate(wks.projects[wks.startproject]) -- launch/startup project
 
     p.pop('}')
 end

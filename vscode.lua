@@ -8,6 +8,7 @@ local project = p.project
 function vscode.generateWorkspace(wks)
     p.eol("\r\n")    
     p.indent("\t")
+    -- NOTE: the .code-workspace file now contains the tasks and launch configurations.
     p.generate(wks, ".code-workspace", vscode.workspace.generate)
 end
 
@@ -18,24 +19,7 @@ function vscode.generateProject(prj)
     if (project.isc(prj) or project.iscpp(prj)) then
         p.generate(prj, prj.location .. "/.vscode/c_cpp_properties.json", vscode.project.cCppProperties.generate)
     end
-
-	local isLaunchable = false
-
-	for cfg in project.eachconfig(prj) do
-		isLaunchable = cfg.kind == "ConsoleApp" or cfg.kind == "WindowedApp"
-
-		if isLaunchable then
-			break
-		end
-	end
-
-    -- build tasks
-    p.generate(prj.workspace, prj.location .. "/.vscode/tasks.json", vscode.project.tasks.generate)
-
-    -- launch.json for startup project
-	if isLaunchable then
-		p.generate(prj, prj.location .. "/.vscode/launch.json", vscode.project.launch.generate)
-	end
+    
 end
 
 function vscode.configName(config, includePlatform)
