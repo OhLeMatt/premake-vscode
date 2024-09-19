@@ -29,6 +29,10 @@ function vscode.generateProject(prj)
 		end
 	end
 
+    -- build tasks
+    p.generate(prj.workspace, prj.location .. "/.vscode/tasks.json", vscode.project.tasks.generate)
+
+    -- launch.json for startup project
 	if isLaunchable then
 		p.generate(prj, prj.location .. "/.vscode/launch.json", vscode.project.launch.generate)
 	end
