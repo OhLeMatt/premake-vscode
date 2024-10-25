@@ -1,9 +1,12 @@
+-- TASK GENERATION
+
+-- Aliases
 local p = premake
 local vscode = p.modules.vscode
-
--- define tasks object
-vscode.tasks = {}
 local tasks = vscode.tasks
+
+-- Define tasks object
+vscode.tasks = {}
 
 -- Task build functions
 function tasks.buildSolutionTask(wks)
@@ -59,6 +62,8 @@ tasks.buildTasks = function(wks)
 
 end
 
+
+-- COMBINED GENERATION
 function tasks.generate(wks)
     p.push('"tasks": {')
     p.w('"version": "2.0.0",')

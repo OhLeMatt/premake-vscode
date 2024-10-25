@@ -1,12 +1,18 @@
+-- PROJECT GENERATION
+
+-- Aliases
 local p = premake
 local project = p.project
 local config = p.config
 local tree = p.tree
 local vscode = p.modules.vscode
 
+-- Initialize project object
 vscode.project = {}
 vscode.project.cCppProperties = {}
 
+
+-- Supported C/C++ Properties
 local cCppProperties = vscode.project.cCppProperties
 
 cCppProperties.cppStandards = {
@@ -35,6 +41,7 @@ cCppProperties.toolsetPaths = {
     }
 }
 
+-- C/C++ Property Generation reflection
 cCppProperties.configProps = function(prj, cfg)
     return {
         cCppProperties.intelliSenseMode,
@@ -46,25 +53,34 @@ cCppProperties.configProps = function(prj, cfg)
     }
 end
 
+
+-- GENERATION METHODS --
+
+-- Intellisense
 function cCppProperties.intelliSenseMode(prj, cfg)
+    -- Supported intellisense modes
+    -- NOTE(minifalafel): Maybe this should be stored somewhere else? In case we ever need to access it anywhere else.
     local supportedModes = {
         ["msc"] = "msvc-x64",
         ["clang"] = "clang-x64",
         ["gcc"] = "gcc-x64"
     }
 
+    -- Select the mode based on the toolset (if it's supported)
     local toolset = vscode.getToolsetName(cfg)
     local mode = supportedModes[toolset]
 
     if mode == nil then
-        error("Invalid toolset '" .. toolset "'")
+        error("Unsupported toolset '" .. toolset "'")
     end
 
+    -- Finally write the option
     p.w('"intelliSenseMode": "%s",', mode)
 end
 
 function cCppProperties.includeDirs(prj, cfg)
 
+    -- TODO: Maybe these could be consolidated into a single array and then checked?
     local hasIncludeDirs = #cfg.sysincludedirs > 0 or #cfg.externalincludedirs > 0 or #cfg.includedirs > 0
 
     if hasIncludeDirs then
@@ -83,7 +99,6 @@ function cCppProperties.includeDirs(prj, cfg)
         for _, includedir in ipairs(cfg.includedirs) do
             p.w('"%s",', includedir:gsub([[\]], "/"))
         end
-
         p.pop('],')
     end
 end
@@ -137,16 +152,22 @@ function cCppProperties.compilerPath(prj, cfg)
     p.w('"compilerPath": "%s",', toolsetPath)
 end
 
+
+-- C/C++ COMBINED GENERATION
 function cCppProperties.generate(prj)
+    -- ".json" formatted opening bracket and property name
     p.push('{')
     p.push('"configurations": [')
-
+    
+    -- For each project configuration
     for cfg in project.eachconfig(prj) do
-        local configName = vscode.configName(cfg, #prj.workspace.platforms > 1)
-
         p.push('{')
+        
+        -- Set the name
+        local configName = vscode.configName(cfg, #prj.workspace.platforms > 1)
         p.w('"name": "%s",', configName)
 
+        -- Generate the C/C++ Properties
         p.callArray(cCppProperties.configProps, prj, cfg)
 
         p.pop('},')
