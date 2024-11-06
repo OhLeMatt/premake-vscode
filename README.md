@@ -1,3 +1,12 @@
+# OhLeMatt's Fork
+Current repo forked from MiniFalafel. For some reasons, it was impossible to run Premake5 with 
+MiniFalafel's code at the moment (06/11/2024). 
+Maybe it is due to my configuration or my lack of knowledge on Lua/Premake addons, but I had to 
+move some variable initialization to prevent nil errors.
+
+If there is a way to make it work natively with the MiniFalafel's repo (now or in the future), I
+naturally will close this fork (to avoid having many duplicates of this work).
+
 # premake-vscode
 An extension for premake that adds project and workspace generation for Visual Studio Code.
 
