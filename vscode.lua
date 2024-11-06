@@ -1,5 +1,7 @@
 -- VSCODE MODULE
 
+-- Initialize vscode
+premake.modules.vscode = { _VERSION = "1.0.0" }
 
 -- Include workspace and project files
 
@@ -14,8 +16,6 @@ include("_preload.lua")
 local p = premake
 local project = p.project
 local vscode = p.modules.vscode
-
-vscode = { _VERSION = "1.0.0" }
 
 -- Workspace Generation
 function vscode.generateWorkspace(wks)
